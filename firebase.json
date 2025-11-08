@@ -1,7 +1,7 @@
 {
   "hosting": [
     {
-      "site": "thebrotherstoys",
+      "site": "storetbt-site",
       "public": "store_tbt/dist",
       "rewrites": [
         { "source": "/api/**", "run": { "serviceId": "api-tbt", "region": "us-east4" } },
@@ -9,7 +9,7 @@
       ]
     },
     {
-      "site": "admintbt",
+      "site": "admintbt-site",
       "public": "admin_tbt/dist",
       "rewrites": [
         { "source": "/api/**", "run": { "serviceId": "api-tbt", "region": "us-east4" } },

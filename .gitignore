@@ -6,3 +6,11 @@
 .DS_Store
 .idea/
 *.iml
+__pycache__/
+*.pyc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.venv/
+venv/

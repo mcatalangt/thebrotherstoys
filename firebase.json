@@ -1,18 +1,18 @@
 {
   "hosting": [
     {
-      "site": "caceria-site",
-      "public": "caceria/dist",
+      "site": "store-site",
+      "public": "store_tbt/dist",
       "rewrites": [
-        { "source": "/api/**", "run": { "serviceId": "api-caceria", "region": "us-central1" } },
+        { "source": "/api/**", "run": { "serviceId": "api-tbt", "region": "us-central1" } },
         { "source": "**", "destination": "/index.html" }
       ]
     },
     {
       "site": "admin-site",
-      "public": "admin_caceria/dist",
+      "public": "admin_tbt/dist",
       "rewrites": [
-        { "source": "/api/**", "run": { "serviceId": "api-caceria", "region": "us-central1" } },
+        { "source": "/api/**", "run": { "serviceId": "api-tbt", "region": "us-central1" } },
         { "source": "**", "destination": "/index.html" }
       ]
     }

@@ -68,7 +68,7 @@ export default function App() {
   return (
     <div className="max-w-5xl mx-auto p-6 min-h-screen">
       <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Admin - Caceria</h1>
+        <h1 className="text-2xl font-bold">Admin - TheBrothersToys</h1>
         <div>
           <button
             className="px-4 py-2 bg-indigo-600 text-white rounded"

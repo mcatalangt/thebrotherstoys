@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="Caceria API")
+app = FastAPI(title="TBT API")
 
 # CORS para desarrollo - ajustar orígenes en producción
 app.add_middleware(

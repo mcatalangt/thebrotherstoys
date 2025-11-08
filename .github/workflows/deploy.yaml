@@ -36,16 +36,16 @@ jobs:
           gcloud auth configure-docker --quiet
 
       - name: Build & push API image
-        working-directory: ./api_caceria
+        working-directory: ./api_tbt
         run: |
-          IMAGE=gcr.io/${{ vars.GCP_PROJECT }}/api-caceria:${{ github.sha }}
+          IMAGE=gcr.io/${{ vars.GCP_PROJECT }}/api-tbt:${{ github.sha }}
           docker build -t $IMAGE .
           docker push $IMAGE
 
       - name: Deploy Cloud Run
         run: |
-          IMAGE=gcr.io/${{ vars.GCP_PROJECT }}/api-caceria:${{ github.sha }}
-          gcloud run deploy api-caceria \
+          IMAGE=gcr.io/${{ vars.GCP_PROJECT }}/api-tbt:${{ github.sha }}
+          gcloud run deploy api_tbt \
             --image $IMAGE \
             --region ${{ vars.REGION }} \
             --platform managed \
@@ -59,4 +59,4 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp-key.json
         run: |
           firebase use ${{ vars.GCP_PROJECT }}
-          firebase deploy --only hosting:${{ vars.FIREBASE_SITE_CACERIA }},hosting:${{ vars.FIREBASE_SITE_ADMIN }} --project ${{ vars.GCP_PROJECT }}
+          firebase deploy --only hosting:${{ vars.FIREBASE_SITE_STORE_TBT }},hosting:${{ vars.FIREBASE_SITE_ADMIN_TBT }} --project ${{ vars.GCP_PROJECT }}

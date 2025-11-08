@@ -219,7 +219,7 @@ const App: React.FC = () => {
           {/* Logo */}
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded bg-red-600" />
-            <div className="text-xl font-black tracking-tight">BrothersToys</div>
+            <div className="text-xl font-black tracking-tight">TheBrothersToys</div>
           </div>
 
           {/* Search */}
@@ -523,7 +523,7 @@ const App: React.FC = () => {
           <div>
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded bg-red-600" />
-              <div className="text-lg font-black tracking-tight">BrothersToys</div>
+              <div className="text-lg font-black tracking-tight">TheBrothersToys</div>
             </div>
             <p className="mt-3 text-sm text-neutral-400">
               XFamily
@@ -596,7 +596,7 @@ const App: React.FC = () => {
           </div>
         </div>
         <div className="border-t border-white/10 py-6 text-center text-sm text-neutral-400">
-          © {new Date().getFullYear()} BrothersToys. All rights reserved.
+          © {new Date().getFullYear()} TheBrothersToys. All rights reserved.
         </div>
       </footer>
     </div>

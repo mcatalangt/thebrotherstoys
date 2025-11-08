@@ -4,7 +4,7 @@
       "site": "thebrotherstoys",
       "public": "store_tbt/dist",
       "rewrites": [
-        { "source": "/api/**", "run": { "serviceId": "api-tbt", "region": "us-central1" } },
+        { "source": "/api/**", "run": { "serviceId": "api-tbt", "region": "us-east4" } },
         { "source": "**", "destination": "/index.html" }
       ]
     },
@@ -12,7 +12,7 @@
       "site": "admintbt",
       "public": "admin_tbt/dist",
       "rewrites": [
-        { "source": "/api/**", "run": { "serviceId": "api-tbt", "region": "us-central1" } },
+        { "source": "/api/**", "run": { "serviceId": "api-tbt", "region": "us-east4" } },
         { "source": "**", "destination": "/index.html" }
       ]
     }

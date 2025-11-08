@@ -1,0 +1,20 @@
+{
+  "hosting": [
+    {
+      "site": "caceria-site",
+      "public": "caceria/dist",
+      "rewrites": [
+        { "source": "/api/**", "run": { "serviceId": "api-caceria", "region": "us-central1" } },
+        { "source": "**", "destination": "/index.html" }
+      ]
+    },
+    {
+      "site": "admin-site",
+      "public": "admin_caceria/dist",
+      "rewrites": [
+        { "source": "/api/**", "run": { "serviceId": "api-caceria", "region": "us-central1" } },
+        { "source": "**", "destination": "/index.html" }
+      ]
+    }
+  ]
+}

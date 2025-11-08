@@ -50,6 +50,7 @@ jobs:
 #            --region ${{ vars.REGION }} \
 #            --platform managed \
 #            --allow-unauthenticated
+#
 
       - name: Install firebase-tools
         run: npm install -g firebase-tools

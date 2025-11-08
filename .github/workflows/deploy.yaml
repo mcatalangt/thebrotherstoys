@@ -45,7 +45,7 @@ jobs:
       - name: Deploy Cloud Run
         run: |
           IMAGE=gcr.io/${{ vars.GCP_PROJECT }}/api-tbt:${{ github.sha }}
-          gcloud run deploy api_tbt \
+          gcloud run deploy api-tbt \
             --image $IMAGE \
             --region ${{ vars.REGION }} \
             --platform managed \

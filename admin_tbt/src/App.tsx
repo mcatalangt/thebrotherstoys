@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Product } from './types';
 import * as api from './services/productService';
 import ProductList from './components/ProductList';

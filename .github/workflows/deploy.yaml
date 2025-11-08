@@ -14,14 +14,14 @@ jobs:
         uses: actions/setup-node@v4
         with: { node-version: '18' }
 
-      - name: Build caceria
-        working-directory: ./caceria
+      - name: Build Store TheBrothersToys
+        working-directory: ./store_tbt
         run: |
           npm ci
           npm run build
 
-      - name: Build admin
-        working-directory: ./admin_caceria
+      - name: Build admin TheBrothersToys
+        working-directory: ./admin_tbt
         run: |
           npm ci
           npm run build
@@ -32,22 +32,22 @@ jobs:
         run: |
           echo "$GCP_SA_KEY" > /tmp/gcp-key.json
           gcloud auth activate-service-account --key-file=/tmp/gcp-key.json
-          gcloud config set project ${{ secrets.GCP_PROJECT }}
+          gcloud config set project ${{ vars.GCP_PROJECT }}
           gcloud auth configure-docker --quiet
 
       - name: Build & push API image
         working-directory: ./api_caceria
         run: |
-          IMAGE=gcr.io/${{ secrets.GCP_PROJECT }}/api-caceria:${{ github.sha }}
+          IMAGE=gcr.io/${{ vars.GCP_PROJECT }}/api-caceria:${{ github.sha }}
           docker build -t $IMAGE .
           docker push $IMAGE
 
       - name: Deploy Cloud Run
         run: |
-          IMAGE=gcr.io/${{ secrets.GCP_PROJECT }}/api-caceria:${{ github.sha }}
+          IMAGE=gcr.io/${{ vars.GCP_PROJECT }}/api-caceria:${{ github.sha }}
           gcloud run deploy api-caceria \
             --image $IMAGE \
-            --region ${{ secrets.REGION }} \
+            --region ${{ vars.REGION }} \
             --platform managed \
             --allow-unauthenticated
 
@@ -58,5 +58,5 @@ jobs:
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp-key.json
         run: |
-          firebase use ${{ secrets.GCP_PROJECT }}
-          firebase deploy --only hosting:${{ secrets.FIREBASE_SITE_CACERIA }},hosting:${{ secrets.FIREBASE_SITE_ADMIN }} --project ${{ secrets.GCP_PROJECT }}
+          firebase use ${{ vars.GCP_PROJECT }}
+          firebase deploy --only hosting:${{ vars.FIREBASE_SITE_CACERIA }},hosting:${{ vars.FIREBASE_SITE_ADMIN }} --project ${{ vars.GCP_PROJECT }}

@@ -35,12 +35,12 @@ jobs:
           gcloud config set project ${{ vars.GCP_PROJECT }}
           gcloud auth configure-docker --quiet
 
-#      - name: Build & push API image
-#        working-directory: ./api_tbt
-#        run: |
-#          IMAGE=gcr.io/${{ vars.GCP_PROJECT }}/api-tbt:${{ github.sha }}
-#          docker build -t $IMAGE .
-#          docker push $IMAGE
+      - name: Build & push API image
+        working-directory: ./api_tbt
+        run: |
+          IMAGE=gcr.io/${{ vars.GCP_PROJECT }}/api-tbt:${{ github.sha }}
+          docker build -t $IMAGE .
+          docker push $IMAGE
 
 #      - name: Deploy Cloud Run
 #        run: |

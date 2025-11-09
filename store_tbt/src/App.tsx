@@ -596,7 +596,7 @@ const App: React.FC = () => {
           </div>
         </div>
         <div className="border-t border-white/10 py-6 text-center text-sm text-neutral-400">
-          © {new Date().getFullYear()} TheBrothersToys. All rights reserved.
+          © {new Date().getFullYear()} The Brothers Toys. All rights reserved.
         </div>
       </footer>
     </div>

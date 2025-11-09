@@ -49,8 +49,16 @@ jobs:
             --image $IMAGE \
             --region ${{ vars.REGION }} \
             --platform managed \
-            --allow-unauthenticated
+            --allow-unauthenticated \
 
+      - name: Add policy
+        run: |
+          gcloud run services add-iam-policy-binding api-tbt \
+            --member="allUsers" \
+            --role="roles/run.invoker" \
+            --region ${{ vars.REGION }}  \
+            --platform managed \
+            --project ${{ vars.GCP_PROJECT }}
 
       - name: Install firebase-tools
         run: npm install -g firebase-tools

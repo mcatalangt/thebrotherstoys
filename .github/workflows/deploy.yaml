@@ -42,14 +42,14 @@ jobs:
           docker build -t $IMAGE .
           docker push $IMAGE
 
-      - name: Deploy Cloud Run
-        run: |
-          IMAGE=gcr.io/${{ vars.GCP_PROJECT }}/api-tbt:${{ github.sha }}
-          gcloud run deploy api-tbt \
-            --image $IMAGE \
-            --region ${{ vars.REGION }} \
-            --platform managed \
-            --allow-unauthenticated 
+#      - name: Deploy Cloud Run
+#        run: |
+#          IMAGE=gcr.io/${{ vars.GCP_PROJECT }}/api-tbt:${{ github.sha }}
+#          gcloud run deploy api-tbt \
+#            --image $IMAGE \
+#            --region ${{ vars.REGION }} \
+#            --platform managed \
+#            --allow-unauthenticated 
 
       - name: Install firebase-tools
         run: npm install -g firebase-tools

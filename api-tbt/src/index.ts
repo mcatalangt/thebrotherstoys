@@ -84,13 +84,47 @@ app.post("/products", async (req, res) => {
   }
 });
 
-//app.put('/products/:id', (req, res) => {
-//  const idx = products.findIndex((x) => x.id === req.params.id);
-//  if (idx === -1) return res.status(404).json({ error: 'Product not found' });
-//  const patch = req.body as Partial<Product>;
-//  products[idx] = { ...products[idx], ...patch };
-//  res.json(products[idx]);
-//});
+const ALLOWED_FIELDS = new Set(["name", "price", "description", "images", "tags", "stock"]);
+
+app.put("/products/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const ref = db.collection("products").doc(id);
+    const snap = await ref.get();
+    if (!snap.exists) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    const patch: Record<string, any> = {};
+    for (const [k, v] of Object.entries(req.body ?? {})) {
+      if (ALLOWED_FIELDS.has(k)) patch[k] = v;
+    }
+    if (Object.keys(patch).length === 0) {
+      return res.status(400).json({ error: "No valid fields to update" });
+    }
+
+    if (patch.price !== undefined && typeof patch.price !== "number") {
+      return res.status(400).json({ error: "price must be a number" });
+    }
+    if (patch.images && !Array.isArray(patch.images)) {
+      return res.status(400).json({ error: "images must be an array" });
+    }
+    if (patch.tags && !Array.isArray(patch.tags)) {
+      return res.status(400).json({ error: "tags must be an array" });
+    }
+
+    patch.updatedAt = FieldValue.serverTimestamp();
+
+    await ref.set(patch, { merge: true });
+
+    const updated = await ref.get();
+    return res.json({ id: updated.id, ...updated.data() });
+  } catch (err: any) {
+    console.error("PUT /products/:id error:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 //app.delete('/products/:id', (req, res) => {
 //  const before = products.length;

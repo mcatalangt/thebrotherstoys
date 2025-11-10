@@ -22,6 +22,7 @@ let products: Product[] = [
 
 app.get("/products", async (req, res) => {
   const snapshot = await db.collection("products").get();
+  console.log("Fetched products from Firestore:", snapshot.size);
   const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   res.json(data);
 });

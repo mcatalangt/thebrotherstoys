@@ -11,18 +11,20 @@ POST {{host}}/products
 Content-Type: application/json
 
 {
-  "name": "Conor McGregor Action Figure",
+  "name": "SCARFACE",
   "price": 390.00,
-  "description": "Conor McGregor Action Figure",
+  "description": "Tony Montana Action Figure",
   "images": ["https://example.com/image1.jpg"],
-  "tags": ["McFarlane", "UFC"]
+  "tags": ["McFarlane", "Movies"]
 }
 
 ### PUT  Update a new product
-PUT {{host}}/products/09da0f28-1e64-481b-b35a-d67564b5101f
+PUT {{host}}/products/bbf188f8-a88c-4d4c-a652-37e233763d38
 Content-Type: application/json
 
 {
-  "name": "Conor McGregor",
-  "price": 375.00
+  "price": 360.00
 }
+
+### DELETE a product by ID
+DELETE {{host}}/products/0bIMcrwWKjbOVnJkEkTP

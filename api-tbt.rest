@@ -1,0 +1,5 @@
+### GET  List all products
+https://thebrotherstoys--focus-infusion-463923-t8.us-east4.hosted.app/products
+
+### GET a product by ID
+https://thebrotherstoys--focus-infusion-463923-t8.us-east4.hosted.app/products/1

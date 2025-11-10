@@ -20,6 +20,8 @@ let products: Product[] = [
   { id: '1', name: 'Demo', price: 9.99, description: 'Producto demo', images: [], tags: [] },
 ];
 
+app.get("/", (_, res) => res.send("OK"));
+
 app.get("/products", async (req, res) => {
   const snapshot = await db.collection("products").get();
   console.log("Fetched products from Firestore:", snapshot.size);

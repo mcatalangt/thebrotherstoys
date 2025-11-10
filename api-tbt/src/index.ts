@@ -21,7 +21,7 @@ let products: Product[] = [
 ];
 
 app.get("/products", async (req, res) => {
-  const snapshot = await db.collection("toys").get();
+  const snapshot = await db.collection("products").get();
   const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   res.json(data);
 });

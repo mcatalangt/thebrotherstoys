@@ -1,4 +1,5 @@
 import express from 'express';
+import { db, FieldValue } from "./db.js"; 
 import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -19,8 +20,10 @@ let products: Product[] = [
   { id: '1', name: 'Demo', price: 9.99, description: 'Producto demo', images: [], tags: [] },
 ];
 
-app.get('/products', (req, res) => {
-  res.json(products);
+app.get("/products", async (req, res) => {
+  const snapshot = await db.collection("toys").get();
+  const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  res.json(data);
 });
 
 app.get('/products/:id', (req, res) => {

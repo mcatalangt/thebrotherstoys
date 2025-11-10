@@ -14,3 +14,4 @@ __pycache__/
 .env.production.local
 .venv/
 venv/
+*.rest

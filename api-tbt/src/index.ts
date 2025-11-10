@@ -16,6 +16,8 @@ interface Product {
   description?: string;
   images: string[];
   tags: string[];
+  createdAt?: FirebaseFirestore.Timestamp | FirebaseFirestore.FieldValue;
+  updatedAt?: FirebaseFirestore.Timestamp | FirebaseFirestore.FieldValue;
 }
 
 app.get("/", (_, res) => res.send("OK"));
@@ -71,6 +73,7 @@ app.post("/products", async (req, res) => {
       description: body.description || "",
       images: body.images ?? [],
       tags: body.tags ?? [],
+      createdAt: FieldValue.serverTimestamp(),
     };
 
     // 🔹 Guardar en Firestore (colección "products")
@@ -126,12 +129,25 @@ app.put("/products/:id", async (req, res) => {
   }
 });
 
-//app.delete('/products/:id', (req, res) => {
-//  const before = products.length;
-//  products = products.filter((x) => x.id !== req.params.id);
-//  if (products.length === before) return res.status(404).json({ error: 'Product not found' });
-//  res.status(204).send();
-//});
+app.delete("/products/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const ref = db.collection("products").doc(id);
+    const doc = await ref.get();
+
+    if (!doc.exists) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    await ref.delete();
+
+    console.log(`🗑️ Product ${id} deleted`);
+    res.status(204).send(); // 204 No Content
+  } catch (err: any) {
+    console.error("DELETE /products/:id error:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 8080;
 app.listen(PORT, () => {

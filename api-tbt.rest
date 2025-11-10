@@ -17,3 +17,12 @@ Content-Type: application/json
   "images": ["https://example.com/image1.jpg"],
   "tags": ["McFarlane", "UFC"]
 }
+
+### PUT  Update a new product
+PUT {{host}}/products/09da0f28-1e64-481b-b35a-d67564b5101f
+Content-Type: application/json
+
+{
+  "name": "Conor McGregor",
+  "price": 375.00
+}

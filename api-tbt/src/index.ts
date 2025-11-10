@@ -22,6 +22,16 @@ let products: Product[] = [
 
 app.get("/", (_, res) => res.send("OK"));
 
+app.get("/healthz", async (_req, res) => {
+  try {
+    const doc = await db.doc("health/check").get();
+    res.json({ ok: true, exists: doc.exists });
+  } catch (e:any) {
+    console.error("HEALTHZ ERROR:", e.code, e.message);
+    res.status(500).json({ ok: false, code: e.code, msg: e.message });
+  }
+});
+
 app.get("/products", async (req, res) => {
   const snapshot = await db.collection("products").get();
   console.log("Fetched products from Firestore:", snapshot.size);

@@ -6,13 +6,17 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { CollectionReference } from 'firebase-admin/firestore';
 import { v4 as uuidv4 } from 'uuid';
 const router = express.Router();
+import { Request, Response } from 'express';
+import multer from 'multer'; 
+
+
+
 const upload = multer({ 
     // Configura Multer para almacenar el archivo en la memoria del servidor 
     // antes de enviarlo a Storage.
     storage: multer.memoryStorage() 
 });
-import { Request, Response } from 'express';
-import multer from 'multer';
+
 
 interface Product {
   id: string;

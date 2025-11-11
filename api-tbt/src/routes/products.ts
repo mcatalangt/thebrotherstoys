@@ -1,9 +1,18 @@
 
 const express = require('express');
-import { db, FieldValue } from "../db"; 
+//import { db, FieldValue } from "../db"; 
+import { db, bucket, FieldValue } from '../../firebase-config'; 
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { CollectionReference } from 'firebase-admin/firestore';
 import { v4 as uuidv4 } from 'uuid';
 const router = express.Router();
+const upload = multer({ 
+    // Configura Multer para almacenar el archivo en la memoria del servidor 
+    // antes de enviarlo a Storage.
+    storage: multer.memoryStorage() 
+});
 import { Request, Response } from 'express';
+import multer from 'multer';
 
 interface Product {
   id: string;
@@ -16,7 +25,9 @@ interface Product {
   updatedAt?: FirebaseFirestore.Timestamp | FirebaseFirestore.FieldValue;
 }
 
-
+interface MulterRequest extends Request {
+    file: any;
+}
 
 router.get("/", async (req: Request, res: Response) => {
   const snapshot = await db.collection("products").get();
@@ -42,7 +53,11 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", upload.single('file'), async (req: MulterRequest, res: Response) => {
+    const file = req.file;
+    if (!file) {
+        return res.status(400).send('No se proporcionó ningún archivo.');
+    }
   try {
     const body = req.body as Partial<Product>;
 
@@ -51,13 +66,27 @@ router.post("/", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid payload" });
     }
 
+
+    const fileName = `products/${Date.now()}-${req.file.originalname}`;
+    const file = bucket.file(fileName);
+
+    await file.save(req.file.buffer, {
+            metadata: { contentType: req.file.mimetype },
+            public: true // Hace el archivo público
+        });
+
+        // 3. OBTENER LA URL PÚBLICA DE LA IMAGEN
+    const imageUrl = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
+
+
+        
     // Construir producto
     const p: Product = {
       id: uuidv4(),
       name: body.name,
       price: body.price,
       description: body.description || "",
-      images: body.images ?? [],
+      images: imageUrl ? [imageUrl] : [],
       tags: body.tags ?? [],
       createdAt: FieldValue.serverTimestamp(),
     };

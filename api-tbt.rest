@@ -1,9 +1,9 @@
-@host = https://thebrotherstoys--focus-infusion-463923-t8.us-east4.hosted.app
+@host = https://thebrotherstoys--focus-infusion-463923-t8.us-east4.hosted.app/
 ### GET  List all products
-{{host}}/products
+{{host}}/api/products
 
 ### GET a product by ID
-{{host}}/products/0bIMcrwWKjbOVnJkEkTP
+{{host}}/api/products/0bIMcrwWKjbOVnJkEkTP
 
 
 ### POST  Create a new product

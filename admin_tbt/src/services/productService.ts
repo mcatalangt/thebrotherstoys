@@ -1,6 +1,6 @@
 import type { Product } from '../types';
 
-const API_BASE = '/api/products'; // vite proxy -> http://localhost:4000/products
+const API_BASE = '/api/products'; 
 const LS_KEY = 'admin_products_fallback';
 
 async function safeFetch<T>(input: RequestInfo, init?: RequestInit): Promise<T> {

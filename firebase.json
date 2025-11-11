@@ -14,7 +14,10 @@
         { "source": "/api/**",
         "run": { "serviceId": "thebrotherstoys", "region": "us-east4" } },
         { "source": "**", "destination": "/index.html" }
-      ]
+      ],
+          "headers": [
+      { "source": "/**", "headers": [ { "key": "Cache-Control", "value": "public, max-age=300" } ] }
+    ]
     }
   ]
 }

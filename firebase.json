@@ -12,7 +12,7 @@
       "public": "admin_tbt/dist",
       "rewrites": [
         { "source": "/api/**",
-        "run": { "serviceId": "api-tbt", "region": "us-east4" } },
+        "run": { "serviceId": "thebrotherstoys", "region": "us-east4" } },
         { "source": "**", "destination": "/index.html" }
       ]
     }

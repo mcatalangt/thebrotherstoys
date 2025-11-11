@@ -1,7 +1,7 @@
 
 const express = require('express');
 //import { db, FieldValue } from "../db"; 
-import { db, bucket, FieldValue } from '../../firebase-config'; 
+import { db, bucket, FieldValue } from '../firebase-config'; 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { CollectionReference } from 'firebase-admin/firestore';
 import { v4 as uuidv4 } from 'uuid';

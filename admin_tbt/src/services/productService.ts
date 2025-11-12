@@ -26,12 +26,13 @@ const formData = new FormData();
 
 if (imageFiles) {
     imageFiles.forEach((fileWithPreview, index) => {
-      console.log(`--- Frontend File ${index} Properties ---`);
-      console.log(`Name: ${fileWithPreview.name}`);
-      console.log(`Type (MIME): ${fileWithPreview.type}`); // <-- ¡Verifica este valor!
-      console.log(`Size: ${fileWithPreview.size}`);
-      console.log('------------------------------------------');
-    const fileToAppend = fileWithPreview as File;
+    const fileToAppend = new File(
+            [fileWithPreview], 
+            fileWithPreview.name, 
+            { type: fileWithPreview.type } 
+        );
+
+      console.log(`Sending File ${index}: Type: ${fileToAppend.type}, Name: ${fileToAppend.name}`);
         formData.append('files', fileToAppend, fileToAppend.name);
     });
 }

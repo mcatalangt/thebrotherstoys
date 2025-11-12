@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { Product } from './types';
+import { type Product, type FormPayload } from  './types/index';
 import * as api from './services/productService';
 import ProductList from './components/ProductList';
 import ProductForm from './components/ProductForm';
@@ -32,22 +32,49 @@ export default function App() {
     }
   }
 
-  async function handleSave(payload: Omit<Product, 'id'>, id?: string) {
+
+async function handleSave(payload: FormPayload, id?: string) {
+    
+    // 1. Separar el array de archivos de los datos de texto
+    const { imageFiles, ...dataToSave } = payload;
+    
     try {
-      if (id) {
-        const updated = await api.updateProduct(id, payload);
-        setProducts((s) => s.map((p) => (p.id === id ? (updated ?? p) : p)));
-      } else {
-        const created = await api.createProduct(payload);
-        setProducts((s) => [created, ...s]);
-      }
-      setShowForm(false);
-      setEditing(null);
+        let result: Product | null = null;
+        
+        if (id) {
+            // Lógica de ACTUALIZACIÓN (Edición):
+            // La API debe manejar el merge de 'imageFiles' y 'currentImageUrls'.
+            const updatedPayload = { ...dataToSave, id: id, imageFiles: imageFiles };
+            result = await api.updateProduct(id, updatedPayload); 
+            
+            if (result) {
+                 setProducts((s) => s.map((p) => (p.id === id ? result! : p)));
+            }
+
+        } else {
+            // Lógica de CREACIÓN: Requiere el array de archivos.
+            if (!imageFiles || imageFiles.length === 0) {
+                throw new Error("Se requiere al menos una imagen para la creación.");
+            }
+            
+            // Pasar el payload completo, incluyendo el array de archivos.
+            const creationPayload = { ...dataToSave, imageFiles };
+            result = await api.createProduct(creationPayload);
+            
+            if (result) {
+                setProducts((s) => [result!, ...s]);
+            }
+        }
+
+        // Finalizar
+        setShowForm(false);
+        setEditing(null);
+        
     } catch (err) {
-      console.error('save error', err);
-      setError(String(err ?? 'Error saving product'));
+        console.error('save error', err);
+        setError(String(err ?? 'Error saving product'));
     }
-  }
+}
 
   async function handleDelete(id: string) {
     if (!confirm('Eliminar producto?')) return;

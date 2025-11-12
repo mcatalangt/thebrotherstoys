@@ -51,13 +51,9 @@ export default function ProductForm({ initial, onSave, onCancel }: Props) {
 
 Promise.all(readers).then((results) => {
         
-        // ⭐ CORRECCIÓN: Creamos el array de objetos FileWithPreview
         const filesWithPreview: FileWithPreview[] = fileArray.map((file, index) => ({
-            ...file, // Mantenemos el objeto File original
-            preview: results[index] // Agregamos la propiedad 'preview' con el Base64
+            ...file, preview: results[index] 
         }));
-        
-        // 4. Actualizamos el estado con el array de objetos (FileWithPreview[])
         setNewImageFiles((prev) => [...prev, ...filesWithPreview]);
     });
 

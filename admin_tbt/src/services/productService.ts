@@ -26,10 +26,13 @@ const formData = new FormData();
 
 if (imageFiles) {
     imageFiles.forEach((fileWithPreview, index) => {
-    const fileToAppend = new File(
+   const fileName = fileWithPreview.name || `image-${index}.jpg`;
+        const fileType = fileWithPreview.type || 'application/octet-stream';
+        
+        const fileToAppend = new File(
             [fileWithPreview], 
-            fileWithPreview.name, 
-            { type: fileWithPreview.type } 
+            fileName, 
+            { type: fileType }
         );
 
       console.log(`Sending File ${index}: Type: ${fileToAppend.type}, Name: ${fileToAppend.name}`);

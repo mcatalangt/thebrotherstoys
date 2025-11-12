@@ -94,7 +94,11 @@ if (!body.name || isNaN(price)) {
         
         const uploadPromises = files.map(async (file, index) => {
 
-            const fileExtension = file.originalname.split('.').pop();
+            const originalParts = file.originalname.split('.');
+
+            const fileExtension = originalParts.length > 1 
+                    ? originalParts.pop() 
+                    : file.mimetype.split('/').pop() || 'dat';
             const uniqueFileName = `${Date.now()}-${index}.${fileExtension}`;
             const storagePath = `products/${uniqueFileName}`;
             const storageFile = bucket.file(storagePath);

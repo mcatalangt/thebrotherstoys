@@ -27,7 +27,6 @@ const formData = new FormData();
 // Código Robusto para asegurar File nativo
 if (imageFiles) {
     imageFiles.forEach((fileWithPreview) => {
-        // 🚨 Crear un nuevo File nativo a partir del contenido de Blob
         const fileToAppend = new File(
             [fileWithPreview], // El contenido del archivo (es un Blob)
             fileWithPreview.name, // El nombre

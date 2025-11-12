@@ -11,9 +11,8 @@ import multer from 'multer';
 
 
 
-const upload = multer({ 
-    storage: multer.memoryStorage() 
-});
+const storage = multer.memoryStorage(); 
+const upload = multer({ storage: storage });
 
 
 interface Product {
@@ -57,13 +56,14 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 router.post('/', upload.array('files'), async (req: Request, res: Response) => {
     
-    // 1. Tipificación y Verificación Inicial
-    // req.files es un array si usamos upload.array()
     const files = req.files as Express.Multer.File[]; 
     const body = req.body;
     let urlsToKeep: string[] = [];
     const price = Number(body.price);
     let productTags: string[] = [];
+    const imageUrls: string[] = [];
+    
+    
 
     if (body.tags && typeof body.tags === 'string') {
         try {
@@ -96,27 +96,25 @@ if (!body.name || isNaN(price)) {
 
     try {
         
-        // 2. SUBIR TODOS LOS ARCHIVOS A CLOUD STORAGE Y OBTENER TODAS LAS URLs
         const uploadPromises = files.map(async (file, index) => {
-            // Genera un nombre de archivo único para cada imagen
-            const fileName = `products/${Date.now()}-${index}-${file.originalname}`;
-            const storageFile = bucket.file(fileName); // <--- Instancia correcta de 'file'
-            
-            // Subir la imagen a Storage
+
+            const fileExtension = file.originalname.split('.').pop();
+            const uniqueFileName = `${Date.now()}-${index}.${fileExtension}`;
+            const storagePath = `products/${uniqueFileName}`;
+            const storageFile = bucket.file(storagePath);
+
             await storageFile.save(file.buffer, {
                 metadata: { contentType: file.mimetype },
-                public: true // Hace el archivo público
+                public: true 
             });
 
             // Retorna la URL pública
             return `https://storage.googleapis.com/${bucket.name}/${storageFile.name}`;
         });
 
-        // Ejecutar todas las subidas de forma concurrente
         const imageUrls: string[] = await Promise.all(uploadPromises);
 
-        
-        // 3. GUARDAR LOS DATOS Y LAS URLs EN FIRESTORE
+
 
         const p: Product = {
             id: uuidv4(),
@@ -139,6 +137,14 @@ if (!body.name || isNaN(price)) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+
+
+
+
+
+
+
 const ALLOWED_FIELDS = new Set(["name", "price", "description", "images", "tags", "stock"]);
 
 router.put("/:id", async (req: Request, res: Response) => {

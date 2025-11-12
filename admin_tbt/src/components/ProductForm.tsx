@@ -102,7 +102,7 @@ export default function ProductForm({ initial, onSave, onCancel }: Props) {
         <label className="block text-sm font-medium">Imágenes</label>
         <input type="file" multiple accept="image/*" onChange={handleFilesChange} className="mt-1" />
         <div className="mt-2 flex gap-2 flex-wrap">
-          {images.map((src, i) => (
+          {imageUrl.map((src, i) => (
             <div key={i} className="relative">
               <img src={src} alt={`preview-${i}`} className="w-24 h-24 object-cover rounded border" />
               <button

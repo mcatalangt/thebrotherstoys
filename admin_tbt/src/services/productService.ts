@@ -1,4 +1,4 @@
-import { type Product, type CreateProductPayload } from  './types/index';
+import { type Product, type CreateProductPayload } from  '../types';
 
 const API_BASE = '/api/products'; 
 const LS_KEY = 'admin_products_fallback';

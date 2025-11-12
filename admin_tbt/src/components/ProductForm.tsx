@@ -11,7 +11,7 @@ export default function ProductForm({ initial, onSave, onCancel }: Props) {
   const [name, setName] = useState('');
   const [price, setPrice] = useState<number | ''>('');
   const [description, setDescription] = useState('');
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImageUrl] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
 
@@ -20,13 +20,13 @@ export default function ProductForm({ initial, onSave, onCancel }: Props) {
       setName(initial.name);
       setPrice(initial.price);
       setDescription(initial.description ?? '');
-      setImages(initial.images ?? []);
+      setImageUrl(initial.imageUrl ?? []);
       setTags(initial.tags ?? []);
     } else {
       setName('');
       setPrice('');
       setDescription('');
-      setImages([]);
+      setImageUrl([]);
       setTags([]);
     }
   }, [initial]);
@@ -44,7 +44,7 @@ export default function ProductForm({ initial, onSave, onCancel }: Props) {
         })
     );
     Promise.all(readers).then((results) => {
-      setImages((prev) => [...prev, ...results]);
+      setImageUrl((prev) => [...prev, ...results]);
     });
   }
 
@@ -60,13 +60,13 @@ export default function ProductForm({ initial, onSave, onCancel }: Props) {
   }
 
   function removeImageAt(i: number) {
-    setImages((s) => s.filter((_, idx) => idx !== i));
+    setImageUrl((s) => s.filter((_, idx) => idx !== i));
   }
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!name || price === '') return;
-    onSave({ name, price: Number(price), description, images, tags }, initial?.id);
+    onSave({ name, price: Number(price), description, imageUrl, tags }, initial?.id);
   }
 
   return (

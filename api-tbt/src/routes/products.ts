@@ -23,7 +23,7 @@ interface Product {
   name: string;
   price: number;
   description?: string;
-  images: string[];
+  imageUrl: string[];
   tags: string[];
   createdAt?: FirebaseFirestore.Timestamp | FirebaseFirestore.FieldValue;
   updatedAt?: FirebaseFirestore.Timestamp | FirebaseFirestore.FieldValue;
@@ -57,55 +57,66 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.post("/", upload.single('file'), async (req: MulterRequest, res: Response) => {
-    const file = req.file;
-    if (!file) {
-        return res.status(400).send('No se proporcionó ningún archivo.');
-    }
-  try {
+router.post('/products', upload.array('files'), async (req: Request, res: Response) => {
+    
+    // 1. Tipificación y Verificación Inicial
+    // req.files es un array si usamos upload.array()
+    const files = req.files as Express.Multer.File[]; 
     const body = req.body as Partial<Product>;
 
-    // Validación mínima
+    if (!files || files.length === 0) {
+        return res.status(400).send('No se proporcionaron archivos.');
+    }
     if (!body.name || typeof body.price !== "number") {
-      return res.status(400).json({ error: "Invalid payload" });
+      return res.status(400).json({ error: "Invalid payload or missing name/price" });
     }
 
+    try {
+        
+        // 2. SUBIR TODOS LOS ARCHIVOS A CLOUD STORAGE Y OBTENER TODAS LAS URLs
+        const uploadPromises = files.map(async (file, index) => {
+            // Genera un nombre de archivo único para cada imagen
+            const fileName = `products/${Date.now()}-${index}-${file.originalname}`;
+            const storageFile = bucket.file(fileName); // <--- Instancia correcta de 'file'
+            
+            // Subir la imagen a Storage
+            await storageFile.save(file.buffer, {
+                metadata: { contentType: file.mimetype },
+                public: true // Hace el archivo público
+            });
 
-    const fileName = `products/${Date.now()}-${req.file.originalname}`;
-    const file = bucket.file(fileName);
-
-    await file.save(req.file.buffer, {
-            metadata: { contentType: req.file.mimetype },
-            public: true // Hace el archivo público
+            // Retorna la URL pública
+            return `https://storage.googleapis.com/${bucket.name}/${storageFile.name}`;
         });
 
-        // 3. OBTENER LA URL PÚBLICA DE LA IMAGEN
-    const imageUrl = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
-
+        // Ejecutar todas las subidas de forma concurrente
+        const imageUrls: string[] = await Promise.all(uploadPromises);
 
         
-    // Construir producto
-    const p: Product = {
-      id: uuidv4(),
-      name: body.name,
-      price: body.price,
-      description: body.description || "",
-      images: imageUrl ? [imageUrl] : [],
-      tags: body.tags ?? [],
-      createdAt: FieldValue.serverTimestamp(),
-    };
+        // 3. GUARDAR LOS DATOS Y LAS URLs EN FIRESTORE
 
-    // 🔹 Guardar en Firestore (colección "products")
-    await db.collection("products").doc(p.id).set(p);
+        const p: Product = {
+            id: uuidv4(),
+            name: body.name,
+            price: body.price,
+            description: body.description || "",
+            // Asignamos el array de URLs
+            imageUrl: imageUrls, 
+            tags: body.tags ?? [],
+            createdAt: FieldValue.serverTimestamp(),
+        };
 
-    console.log(`✅ Product ${p.id} saved to Firestore`);
-    res.status(201).json(p);
-  } catch (error: any) {
-    console.error("Error creating product:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+        // 🔹 Guardar en Firestore (colección "products")
+        await db.collection("products").doc(p.id).set(p);
+
+        console.log(`✅ Product ${p.id} saved to Firestore with ${imageUrls.length} images.`);
+        res.status(201).json(p);
+
+    } catch (error: any) {
+        console.error("Error creating product:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
-
 const ALLOWED_FIELDS = new Set(["name", "price", "description", "images", "tags", "stock"]);
 
 router.put("/:id", async (req: Request, res: Response) => {

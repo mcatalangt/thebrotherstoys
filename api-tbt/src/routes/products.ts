@@ -57,7 +57,7 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.post('/products', upload.array('files'), async (req: Request, res: Response) => {
+router.post('/', upload.array('files'), async (req: Request, res: Response) => {
     
     // 1. Tipificación y Verificación Inicial
     // req.files es un array si usamos upload.array()

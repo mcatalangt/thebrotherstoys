@@ -67,10 +67,8 @@ router.post('/', upload.array('files'), async (req: Request, res: Response) => {
 
     if (body.tags && typeof body.tags === 'string') {
         try {
-            // 🚨 CONVERSIÓN CRÍTICA: Parsea el string JSON
             const parsedTags = JSON.parse(body.tags); 
             
-            // 2. ✅ Asegúrate de que el resultado del parseo sea un array
             if (Array.isArray(parsedTags)) {
                 productTags = parsedTags;
             } else {
@@ -78,7 +76,6 @@ router.post('/', upload.array('files'), async (req: Request, res: Response) => {
             }
         } catch (e) {
             console.error('Error al parsear el string de tags a JSON:', e);
-            // Si el parseo falla, productTags sigue siendo []
         }
     }
 
@@ -90,7 +87,6 @@ router.post('/', upload.array('files'), async (req: Request, res: Response) => {
         return res.status(400).send('No se proporcionaron archivos.');
     }
 if (!body.name || isNaN(price)) {
-        // isNaN(price) será TRUE si el string no era un número válido ("abc")
         return res.status(400).json({ error: "Invalid payload or missing name/price" }); 
     }
 
@@ -108,7 +104,6 @@ if (!body.name || isNaN(price)) {
                 public: true 
             });
 
-            // Retorna la URL pública
             return `https://storage.googleapis.com/${bucket.name}/${storageFile.name}`;
         });
 
@@ -126,7 +121,6 @@ if (!body.name || isNaN(price)) {
             createdAt: FieldValue.serverTimestamp(),
         };
 
-        // 🔹 Guardar en Firestore (colección "products")
         await db.collection("products").doc(p.id).set(p);
 
         console.log(`✅ Product ${p.id} saved to Firestore with ${imageUrls.length} images.`);

@@ -24,9 +24,9 @@ export default function ProductList({ products, onEdit, onDelete }: Props) {
           {products.map((p) => (
             <tr key={p.id} className="border-t">
               <td className="p-3">
-                {p.images && p.images.length > 0 ? (
+                {p.imageUrl && p.imageUrl.length > 0 ? (
                   <img
-                    src={p.images[0]}
+                    src={p.imageUrl[0]}
                     alt={p.name}
                     className="w-16 h-10 object-cover rounded"
                   />

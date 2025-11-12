@@ -5,6 +5,7 @@ export interface Product {
     description: string;
     price: number;
     imageUrl: string[]; // Array de URLs
+    tags?: string[];
 }
 
 // Interfaz para los datos que vienen del formulario (Cliente)

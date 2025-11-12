@@ -24,11 +24,21 @@ export async function createProduct(payload: CreateProductPayload): Promise<Prod
 const { imageFiles, currentImageUrls, ...productData } = payload;
 const formData = new FormData();
 
+// Código Robusto para asegurar File nativo
 if (imageFiles) {
-        imageFiles.forEach((file) => {
-            formData.append('files', file as File); 
-        });
-    }
+    imageFiles.forEach((fileWithPreview) => {
+        
+        // 🚨 Crear un nuevo File nativo a partir del contenido de Blob
+        const fileToAppend = new File(
+            [fileWithPreview], // El contenido del archivo (es un Blob)
+            fileWithPreview.name, // El nombre
+            { type: fileWithPreview.type } // El tipo MIME
+        );
+
+        // ✅ Se adjunta con el nombre del archivo (tercer argumento)
+        formData.append('files', fileToAppend, fileToAppend.name);
+    });
+}
 
 Object.keys(productData).forEach(key => {
         formData.append(key, String(productData[key as keyof typeof productData])); 

@@ -58,7 +58,7 @@ async function handleSave(payload: FormPayload, id?: string) {
             }
             
             // Pasar el payload completo, incluyendo el array de archivos.
-            const creationPayload = { ...dataToSave, imageFiles };
+            const creationPayload = { ...dataToSave, imageFiles: imageFiles };
             result = await api.createProduct(creationPayload);
             
             if (result) {

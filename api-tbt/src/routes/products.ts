@@ -64,6 +64,7 @@ router.post('/', upload.array('files'), async (req: Request, res: Response) => {
     const files = req.files as Express.Multer.File[]; 
     const body = req.body;
     let urlsToKeep: string[] = [];
+    const price = Number(body.price);
 
     if (body.currentImageUrls) {
         urlsToKeep = JSON.parse(body.currentImageUrls); 
@@ -72,8 +73,9 @@ router.post('/', upload.array('files'), async (req: Request, res: Response) => {
     if (!files || files.length === 0) {
         return res.status(400).send('No se proporcionaron archivos.');
     }
-    if (!body.name || typeof body.price !== "number") {
-      return res.status(400).json({ error: "Invalid payload or missing name/price" });
+if (!body.name || isNaN(price)) {
+        // isNaN(price) será TRUE si el string no era un número válido ("abc")
+        return res.status(400).json({ error: "Invalid payload or missing name/price" }); 
     }
 
     try {
@@ -103,7 +105,7 @@ router.post('/', upload.array('files'), async (req: Request, res: Response) => {
         const p: Product = {
             id: uuidv4(),
             name: body.name,
-            price: body.price,
+            price: price,
             description: body.description || "",
             // Asignamos el array de URLs
             imageUrl: imageUrls, 

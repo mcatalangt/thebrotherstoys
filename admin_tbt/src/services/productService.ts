@@ -24,16 +24,14 @@ export async function createProduct(payload: CreateProductPayload): Promise<Prod
 const { imageFiles, currentImageUrls, ...productData } = payload;
 const formData = new FormData();
 
-// Código Robusto para asegurar File nativo
 if (imageFiles) {
-    imageFiles.forEach((fileWithPreview) => {
-        const fileToAppend = new File(
-            [fileWithPreview], // El contenido del archivo (es un Blob)
-            fileWithPreview.name, // El nombre
-            { type: fileWithPreview.type } // El tipo MIME
-        );
-
-        // ✅ Se adjunta con el nombre del archivo (tercer argumento)
+    imageFiles.forEach((fileWithPreview, index) => {
+      console.log(`--- Frontend File ${index} Properties ---`);
+      console.log(`Name: ${fileWithPreview.name}`);
+      console.log(`Type (MIME): ${fileWithPreview.type}`); // <-- ¡Verifica este valor!
+      console.log(`Size: ${fileWithPreview.size}`);
+      console.log('------------------------------------------');
+    const fileToAppend = fileWithPreview as File;
         formData.append('files', fileToAppend, fileToAppend.name);
     });
 }
@@ -42,7 +40,6 @@ Object.keys(productData).forEach(key => {
     const value = productData[key as keyof typeof productData];
     
     if (key === 'tags' && Array.isArray(value)) {
-        // ✅ Stringifica el array de tags
         formData.append('tags', JSON.stringify(value));
     } else {
         formData.append(key, String(value));
@@ -64,8 +61,6 @@ Object.keys(productData).forEach(key => {
     if (!res.ok) throw new Error('Network error');
     return (await res.json()) as Product;
 } catch (error) {
-    // --- Lógica de Fallback (LocalStorage) ---
-    // NOTA: El fallback no puede guardar la imagen, solo el texto y una URL ficticia
     console.error("Fallo de red, usando fallback local:", error);
     
     const raw = localStorage.getItem(LS_KEY);

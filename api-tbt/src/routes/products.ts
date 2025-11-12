@@ -63,7 +63,11 @@ router.post('/', upload.array('files'), async (req: Request, res: Response) => {
     let productTags: string[] = [];
     const imageUrls: string[] = [];
     
-    
+    files.forEach((file, index) => {
+        console.log(`File ${index} originalname:`, file.originalname);
+        console.log(`File ${index} mimetype:`, file.mimetype); // <-- ¡CLAVE! Esto te dirá por qué es 'octet-stream'
+        console.log(`File ${index} buffer size:`, file.buffer.length);
+    });
 
     if (body.tags && typeof body.tags === 'string') {
         try {

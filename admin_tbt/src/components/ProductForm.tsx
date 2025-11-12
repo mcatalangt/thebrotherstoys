@@ -11,7 +11,7 @@ export default function ProductForm({ initial, onSave, onCancel }: Props) {
   const [name, setName] = useState('');
   const [price, setPrice] = useState<number | ''>('');
   const [description, setDescription] = useState('');
-  const [images, setImageUrl] = useState<string[]>([]);
+  const [imageUrl, setImageUrl] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
 

@@ -63,6 +63,24 @@ router.post('/', upload.array('files'), async (req: Request, res: Response) => {
     const body = req.body;
     let urlsToKeep: string[] = [];
     const price = Number(body.price);
+    let productTags: string[] = [];
+
+    if (body.tags && typeof body.tags === 'string') {
+        try {
+            // 🚨 CONVERSIÓN CRÍTICA: Parsea el string JSON
+            const parsedTags = JSON.parse(body.tags); 
+            
+            // 2. ✅ Asegúrate de que el resultado del parseo sea un array
+            if (Array.isArray(parsedTags)) {
+                productTags = parsedTags;
+            } else {
+                console.warn('JSON.parse(tags) no devolvió un array.');
+            }
+        } catch (e) {
+            console.error('Error al parsear el string de tags a JSON:', e);
+            // Si el parseo falla, productTags sigue siendo []
+        }
+    }
 
     if (body.currentImageUrls) {
         urlsToKeep = JSON.parse(body.currentImageUrls); 
@@ -106,7 +124,7 @@ if (!body.name || isNaN(price)) {
             price: price,
             description: body.description || "",
             imageUrl: imageUrls, 
-            tags: body.tags ?? [],
+            tags: productTags ?? [],
             createdAt: FieldValue.serverTimestamp(),
         };
 

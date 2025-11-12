@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import type { Product } from '../types';
+import { type Product, type FormPayload , type FileWithPreview} from  '../types/index';
 
 type Props = {
   initial?: Product | null;
-  onSave: (p: Omit<Product, 'id'>, id?: string) => void;
+  onSave: (p: Omit<FormPayload, 'id'>, id?: string) => void;
   onCancel: () => void;
 };
 
@@ -11,7 +11,9 @@ export default function ProductForm({ initial, onSave, onCancel }: Props) {
   const [name, setName] = useState('');
   const [price, setPrice] = useState<number | ''>('');
   const [description, setDescription] = useState('');
-  const [imageUrl, setImageUrl] = useState<string[]>([]);
+ const [newImageFiles, setNewImageFiles] = useState<FileWithPreview[]>([]);
+ const [currentImageUrls, setCurrentImageUrls] = useState<string[]>([]);
+ const allImagePreviews = [...currentImageUrls, ...newImageFiles.map(f => f.preview)];
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
 
@@ -20,32 +22,45 @@ export default function ProductForm({ initial, onSave, onCancel }: Props) {
       setName(initial.name);
       setPrice(initial.price);
       setDescription(initial.description ?? '');
-      setImageUrl(initial.imageUrl ?? []);
+      setCurrentImageUrls(initial.imageUrl ?? []);
+      setNewImageFiles([]);
       setTags(initial.tags ?? []);
     } else {
       setName('');
       setPrice('');
       setDescription('');
-      setImageUrl([]);
+      setCurrentImageUrls([]);
+      setNewImageFiles([]);
       setTags([]);
     }
   }, [initial]);
 
   function handleFilesChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files;
-    if (!files) return;
-    const readers: Promise<string>[] = Array.from(files).map(
-      (file) =>
-        new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(String(reader.result));
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        })
-    );
-    Promise.all(readers).then((results) => {
-      setImageUrl((prev) => [...prev, ...results]);
+    const fileList = e.target.files;
+    if (!fileList) return;
+
+    const fileArray = Array.from(fileList);
+    const readers = fileArray.map(
+            (file) =>
+                new Promise<string>((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(String(reader.result));
+                    reader.readAsDataURL(file); // Lee el Base64 para preview
+                })
+        );
+
+Promise.all(readers).then((results) => {
+        
+        // ⭐ CORRECCIÓN: Creamos el array de objetos FileWithPreview
+        const filesWithPreview: FileWithPreview[] = fileArray.map((file, index) => ({
+            ...file, // Mantenemos el objeto File original
+            preview: results[index] // Agregamos la propiedad 'preview' con el Base64
+        }));
+        
+        // 4. Actualizamos el estado con el array de objetos (FileWithPreview[])
+        setNewImageFiles((prev) => [...prev, ...filesWithPreview]);
     });
+
   }
 
   function addTagFromInput() {
@@ -60,13 +75,27 @@ export default function ProductForm({ initial, onSave, onCancel }: Props) {
   }
 
   function removeImageAt(i: number) {
-    setImageUrl((s) => s.filter((_, idx) => idx !== i));
+    setNewImageFiles((s) => s.filter((_, idx) => idx !== i));
   }
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!name || price === '') return;
-    onSave({ name, price: Number(price), description, imageFiles: newImageFiles, tags }, initial?.id);
+
+    const textPayload = { 
+      name, 
+      price: Number(price), 
+      description, 
+      tags 
+    };
+
+    const payloadToSend: FormPayload = { 
+        ...textPayload, 
+        imageFiles: newImageFiles, // <-- Ahora es visible y tipado
+        currentImageUrls: currentImageUrls // <-- URLs existentes
+    };
+
+    onSave(payloadToSend, initial?.id);
   }
 
   return (
@@ -102,7 +131,7 @@ export default function ProductForm({ initial, onSave, onCancel }: Props) {
         <label className="block text-sm font-medium">Imágenes</label>
         <input type="file" multiple accept="image/*" onChange={handleFilesChange} className="mt-1" />
         <div className="mt-2 flex gap-2 flex-wrap">
-          {imageUrl.map((src, i) => (
+          {allImagePreviews.map((src, i) => (
             <div key={i} className="relative">
               <img src={src} alt={`preview-${i}`} className="w-24 h-24 object-cover rounded border" />
               <button

@@ -66,7 +66,7 @@ export default function ProductForm({ initial, onSave, onCancel }: Props) {
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!name || price === '') return;
-    onSave({ name, price: Number(price), description, imageUrl, tags }, initial?.id);
+    onSave({ name, price: Number(price), description, imageFiles: newImageFiles, tags }, initial?.id);
   }
 
   return (

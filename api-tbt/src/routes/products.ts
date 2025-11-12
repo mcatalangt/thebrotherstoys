@@ -62,7 +62,12 @@ router.post('/', upload.array('files'), async (req: Request, res: Response) => {
     // 1. Tipificación y Verificación Inicial
     // req.files es un array si usamos upload.array()
     const files = req.files as Express.Multer.File[]; 
-    const body = req.body as Partial<Product>;
+    const body = req.body;
+    let urlsToKeep: string[] = [];
+
+    if (body.currentImageUrls) {
+        urlsToKeep = JSON.parse(body.currentImageUrls); 
+    }
 
     if (!files || files.length === 0) {
         return res.status(400).send('No se proporcionaron archivos.');

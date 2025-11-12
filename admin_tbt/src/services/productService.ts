@@ -21,17 +21,22 @@ export async function getAll(): Promise<Product[]> {
 
 export async function createProduct(payload: CreateProductPayload): Promise<Product> {
 
-const { imageFiles, ...productData } = payload;
-  const formData = new FormData();
+const { imageFiles, currentImageUrls, ...productData } = payload;
+const formData = new FormData();
 
-  imageFiles.forEach((file: File) => {
-        // El nombre del campo debe coincidir con upload.array('files') en el servidor.
-        formData.append('files', file); 
+if (imageFiles) {
+        imageFiles.forEach((file) => {
+            formData.append('files', file as File); 
+        });
+    }
+
+Object.keys(productData).forEach(key => {
+        formData.append(key, String(productData[key as keyof typeof productData])); 
     });
 
-  Object.keys(productData).forEach(key => {
-    formData.append(key, String(productData[key as keyof typeof productData])); 
-  });
+    if (currentImageUrls && currentImageUrls.length > 0) {
+        formData.append('currentImageUrls', JSON.stringify(currentImageUrls)); 
+    }
 
   try {
     const res = await fetch(API_BASE, {

@@ -7,14 +7,14 @@
 
 
 ### POST  Create a new product
-POST {{host}}/products
+POST {{host}}/api/products
 Content-Type: application/json
 
 {
   "name": "SCARFACE",
   "price": 390.00,
   "description": "Tony Montana Action Figure",
-  "images": ["https://example.com/image1.jpg"],
+  "imageUrl": ["https://example.com/image1.jpg"],
   "tags": ["McFarlane", "Movies"]
 }
 

@@ -27,7 +27,6 @@ const formData = new FormData();
 // Código Robusto para asegurar File nativo
 if (imageFiles) {
     imageFiles.forEach((fileWithPreview) => {
-        
         // 🚨 Crear un nuevo File nativo a partir del contenido de Blob
         const fileToAppend = new File(
             [fileWithPreview], // El contenido del archivo (es un Blob)
@@ -41,12 +40,21 @@ if (imageFiles) {
 }
 
 Object.keys(productData).forEach(key => {
-        formData.append(key, String(productData[key as keyof typeof productData])); 
-    });
+    const value = productData[key as keyof typeof productData];
+    
+    if (key === 'tags' && Array.isArray(value)) {
+        // ✅ Stringifica el array de tags
+        formData.append('tags', JSON.stringify(value));
+    } else {
+        formData.append(key, String(value));
+    }
+});
 
     if (currentImageUrls && currentImageUrls.length > 0) {
         formData.append('currentImageUrls', JSON.stringify(currentImageUrls)); 
     }
+
+
 
   try {
     const res = await fetch(API_BASE, {

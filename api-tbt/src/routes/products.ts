@@ -12,8 +12,6 @@ import multer from 'multer';
 
 
 const upload = multer({ 
-    // Configura Multer para almacenar el archivo en la memoria del servidor 
-    // antes de enviarlo a Storage.
     storage: multer.memoryStorage() 
 });
 
@@ -107,7 +105,6 @@ if (!body.name || isNaN(price)) {
             name: body.name,
             price: price,
             description: body.description || "",
-            // Asignamos el array de URLs
             imageUrl: imageUrls, 
             tags: body.tags ?? [],
             createdAt: FieldValue.serverTimestamp(),

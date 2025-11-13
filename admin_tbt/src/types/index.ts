@@ -8,12 +8,7 @@ export interface Product {
     tags?: string[];
 }
 
-// Interfaz para los datos que vienen del formulario (Cliente)
-export interface FormPayload extends Omit<Product, 'id' | 'imageUrl'> {
-    imageFiles: File[];// <-- Array de objetos File
-    currentImageUrls?: string[];
-     // Para la edición, si no se cambian algunas URLs
-}
+
 
 // types.ts (o donde tengas la definición de tu API)
 
@@ -25,12 +20,19 @@ export interface FileWithPreview extends File {
     preview: string; // Para la previsualización local
 }
 
-export interface CreateProductPayload extends Omit<Product, 'id' | 'imageUrl'> {
-    // 1. Reemplazar la propiedad de archivo por el ARRAY
-    imageFiles: FileWithPreview[]; 
-    
-    // 2. Si usas 'currentImageUrls' para la edición, inclúyela (opcional)
-    currentImageUrls?: string[]; 
+export interface CreateProductPayload {
+    name: string;
+    price: number;
+    description: string;
+    tags: string[];
+
+    // ✅ SOLO imageFiles (los nuevos archivos para subir)
+    imageFiles: File[];
 }
 
+// Y tu interfaz para EDICIÓN (o FormPayload completo) debe ser:
+export interface FormPayload extends CreateProductPayload {
+    // Para la edición, incluimos las URLs que ya están en el servidor
+    currentImageUrls: string[]; 
+}
 // Nota: Si 'Product' tiene imageUrl: string[], ya está bien.

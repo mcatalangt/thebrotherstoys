@@ -10,8 +10,9 @@ export interface Product {
 
 // Interfaz para los datos que vienen del formulario (Cliente)
 export interface FormPayload extends Omit<Product, 'id' | 'imageUrl'> {
-    imageFiles?: FileWithPreview[]; // <-- Array de objetos File
-    currentImageUrls?: string[]; // Para la edición, si no se cambian algunas URLs
+    imageFiles: File[];// <-- Array de objetos File
+    currentImageUrls?: string[];
+     // Para la edición, si no se cambian algunas URLs
 }
 
 // types.ts (o donde tengas la definición de tu API)

@@ -25,14 +25,16 @@ export interface CreateProductPayload {
     price: number;
     description: string;
     tags: string[];
-
-    // ✅ SOLO imageFiles (los nuevos archivos para subir)
     imageFiles: File[];
+    currentImageUrls: File[];
 }
 
-// Y tu interfaz para EDICIÓN (o FormPayload completo) debe ser:
-export interface FormPayload extends CreateProductPayload {
-    // Para la edición, incluimos las URLs que ya están en el servidor
-    currentImageUrls: string[]; 
+export interface FormPayload {
+  name: string;
+  price: number;
+  description: string;
+  tags: string[];
+  imageFiles: File[];           // DEBE SER File[]
+  currentImageUrls: string[];   // DEBE SER string[]
+  // ... si tienes otras propiedades como 'id', deben ser opcionales: id?: string;
 }
-// Nota: Si 'Product' tiene imageUrl: string[], ya está bien.

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { type Product, type FormPayload } from  '../types/index';
+import { type Product, type FormPayload} from  '../types/index';
 
 type Props = {
   initial?: Product | null;
@@ -102,10 +102,11 @@ export default function ProductForm({ initial, onSave }: Props) {
     }
   }
 
-  function submit(e: React.FormEvent) {
+function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!name || price === '') return;
 
+    // 1. Datos base del formulario
     const textPayload = { 
       name, 
       price: Number(price), 
@@ -113,15 +114,17 @@ export default function ProductForm({ initial, onSave }: Props) {
       tags 
     };
 
-    const payloadToSend: FormPayload = { 
+    // 2. CONSTRUCCIÓN DEL PAYLOAD FINAL (Omit<FormPayload, 'id'>)
+    // Este objeto cumple el contrato de onSave al 100%.
+    const payloadToSend: Omit<FormPayload, 'id'> = { 
         ...textPayload, 
-        // 8. ✅ CORRECCIÓN 4: Usar el estado filesToUpload (File[])
-        imageFiles: filesToUpload, 
-        currentImageUrls: currentImageUrls 
+        imageFiles: filesToUpload,       // ✅ Contiene los archivos binarios (File[])
+        currentImageUrls: currentImageUrls // ✅ Contiene [] si es nuevo, o URLs si es edición.
     };
 
+    // 3. Llamar a onSave (Aquí el error TS2741 debe desaparecer)
     onSave(payloadToSend, initial?.id);
-  }
+}
 
   return (
     <form onSubmit={submit} className="space-y-4">

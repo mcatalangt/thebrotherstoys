@@ -26,15 +26,8 @@ export interface CreateProductPayload {
     description: string;
     tags: string[];
     imageFiles: File[];
-    currentImageUrls: File[];
 }
 
-export interface FormPayload {
-  name: string;
-  price: number;
-  description: string;
-  tags: string[];
-  imageFiles: File[];           // DEBE SER File[]
-  currentImageUrls: string[];   // DEBE SER string[]
-  // ... si tienes otras propiedades como 'id', deben ser opcionales: id?: string;
+export interface FormPayload extends CreateProductPayload {
+    currentImageUrls: string[]; // Añadido para la edición/frontend
 }

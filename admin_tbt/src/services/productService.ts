@@ -1,4 +1,4 @@
-import { type Product, type CreateProductPayload } from  '../types';
+import { type Product, type CreateProductPayload, type FormPayload } from  '../types';
 
 const API_BASE = '/api/products'; 
 const LS_KEY = 'admin_products_fallback';
@@ -19,9 +19,13 @@ export async function getAll(): Promise<Product[]> {
   return safeFetch<Product[]>(API_BASE);
 }
 
-export async function createProduct(payload: CreateProductPayload): Promise<Product> {
+export async function createProduct(payload: FormPayload | CreateProductPayload): Promise<Product> {
 
-const { imageFiles, currentImageUrls, ...productData } = payload;
+const { 
+        imageFiles, 
+        currentImageUrls, 
+        ...productData 
+    } = payload as FormPayload;
 const formData = new FormData();
 
 if (imageFiles) {
